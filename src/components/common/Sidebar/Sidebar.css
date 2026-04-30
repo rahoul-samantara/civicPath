@@ -1,0 +1,144 @@
+/* Sidebar.css — Matches Stitch sidebar layout */
+
+.sidebar {
+  width: var(--sidebar-width);
+  min-height: 100vh;
+  background-color: var(--color-surface-container-lowest);
+  border-right: 1px solid var(--color-outline-variant);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 100;
+  transition: transform var(--transition-base);
+}
+
+/* ── Logo ────────────────────────────────────────────────────────── */
+.sidebar__header {
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.sidebar__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  text-decoration: none;
+}
+
+.sidebar__logo-icon {
+  font-size: 28px;
+  color: var(--color-primary);
+  font-variation-settings: 'FILL' 1;
+}
+
+.sidebar__logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar__brand {
+  font-size: var(--headline-md-size);
+  font-weight: var(--headline-md-weight);
+  color: var(--color-primary);
+  line-height: 1.1;
+}
+
+.sidebar__badge {
+  font-size: var(--caption-size);
+  color: var(--color-on-surface-variant);
+  font-weight: var(--label-md-weight);
+  letter-spacing: var(--label-md-letter-spacing);
+  text-transform: uppercase;
+}
+
+/* ── Nav Links ───────────────────────────────────────────────────── */
+.sidebar__nav {
+  flex: 1;
+  padding: var(--space-sm) 0;
+}
+
+.sidebar__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: 0 var(--space-sm);
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-default);
+  color: var(--color-on-surface-variant);
+  font-size: var(--label-md-size);
+  font-weight: var(--label-md-weight);
+  letter-spacing: var(--label-md-letter-spacing);
+  transition: all var(--transition-fast);
+  min-height: 44px; /* AR-001: Touch target */
+  border: 1px solid transparent;
+}
+
+.sidebar__link:hover {
+  background-color: var(--color-surface-container);
+  color: var(--color-on-surface);
+  transform: translateX(4px);
+}
+
+.sidebar__link--active {
+  background-color: var(--color-primary-fixed);
+  color: var(--color-primary);
+  border-color: var(--color-primary-fixed-dim);
+}
+
+.sidebar__link--active .sidebar__icon {
+  font-variation-settings: 'FILL' 1;
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sidebar__icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────── */
+.sidebar__footer {
+  padding: var(--space-md);
+  border-top: 1px solid var(--color-outline-variant);
+}
+
+.sidebar__source-note {
+  font-size: var(--caption-size);
+  color: var(--color-outline);
+  text-align: center;
+}
+
+/* ── Backdrop (Mobile) ───────────────────────────────────────────── */
+.sidebar-backdrop {
+  display: none;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+  }
+
+  .sidebar--open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(18, 28, 40, 0.4);
+    z-index: 99;
+  }
+}

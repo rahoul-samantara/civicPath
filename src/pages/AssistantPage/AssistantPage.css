@@ -1,0 +1,22 @@
+/* AssistantPage.css */
+
+.assistant-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Fill available space */
+}
+
+.assistant-page__header {
+  margin-bottom: var(--space-md);
+}
+
+.assistant-page__subtitle {
+  color: var(--color-on-surface-variant);
+  margin-top: var(--space-xs);
+}
+
+.assistant-page__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
