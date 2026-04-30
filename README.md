@@ -22,10 +22,13 @@ We leverage **Google Gemini 1.5 Flash** to provide a real-time, non-partisan ass
 - **Contextual Knowledge**: Tailored to the user's specific persona and jurisdiction.
 
 ### 3. Real-World Integration (Google Civic Information API)
-We integrate the **Google Civic Information API** to fetch:
-- Live polling place names and addresses.
-- Election dates and jurisdiction-specific deadlines.
-- Production-ready data handling with fallback states.
+We integrate the **Google Civic Information API** to fetch live polling place data, election dates, and jurisdiction-specific deadlines, ensuring users receive verified, official information.
+
+### 4. SPEC-Driven Development
+The codebase is built using a **Specification-First** methodology. Every major component and service maps directly to architectural requirements (e.g., `Spec §4.1` for AI Guardrails, `Spec §17.1` for Readiness Logic). This ensures traceability and high maintainability.
+
+### 5. Multi-Modal AI Approach
+While the MVP focuses on high-speed text streaming via **Gemini 1.5 Flash**, the architecture is **Multi-Modal Ready**. The modular service layer is designed to support future **Vision Integration** (e.g., document scanning for ID verification) and **Audio/Voice** accessibility features.
 
 ---
 
