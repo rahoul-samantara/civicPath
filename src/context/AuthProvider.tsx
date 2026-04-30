@@ -41,8 +41,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async () => {
-     const { signInWithGoogle } = await import('../services/firebase');
-     await signInWithGoogle();
+     try {
+       const { signInWithGoogle } = await import('../services/firebase');
+       await signInWithGoogle();
+     } catch (error: any) {
+       console.error('Login failed:', error);
+       alert(`Login failed: ${error.message}. Please ensure Google Auth is enabled in Firebase and localhost is an authorized domain.`);
+     }
   };
 
   const logout = () => auth.signOut();

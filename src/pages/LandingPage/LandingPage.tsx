@@ -11,7 +11,7 @@ import './LandingPage.css';
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { updatePersona } = useAuth();
+  const { user, login, updatePersona } = useAuth();
 
   const handlePersonaSelect = async (personaId: VoterPersona) => {
     await updatePersona(personaId);
@@ -26,6 +26,18 @@ export default function LandingPage() {
         <p className="text-body-lg landing__subtitle">
           Your secure, non-partisan AI guide for understanding local policies, tracking deadlines, and preparing for the ballot box.
         </p>
+        
+        {!user ? (
+          <button className="btn btn--primary btn--lg landing__cta" onClick={login}>
+            <span className="material-symbols-outlined btn__icon">login</span>
+            Sign in with Google
+          </button>
+        ) : (
+          <button className="btn btn--secondary btn--lg landing__cta" onClick={() => navigate('/dashboard')}>
+            Go to Dashboard
+          </button>
+        )}
+
         <p className="text-caption landing__disclaimer">
           All insights are synthesized strictly from official county clerk records, verified .gov sources, and non-partisan fact-checkers.
         </p>

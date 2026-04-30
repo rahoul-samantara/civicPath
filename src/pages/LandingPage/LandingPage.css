@@ -39,9 +39,14 @@
 
 .landing__subtitle {
   color: var(--color-on-surface-variant);
-  max-width: 650px;
-  font-size: 20px;
-  line-height: 1.5;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.landing__cta {
+  margin: var(--space-lg) 0;
+  width: fit-content;
+  align-self: center;
 }
 
 .landing__disclaimer {
