@@ -170,9 +170,9 @@ export const mockChatMessages: ChatMessage[] = [
 
 // ── Navigation Items (Stitch: Sidebar nav) ───────────────────────────────
 export const navItems: NavItem[] = [
+  { path: '/dashboard', label: 'Dashboard', icon: 'dashboard', ariaLabel: 'Voter Dashboard' },
   { path: '/assistant', label: 'Assistant', icon: 'smart_toy', ariaLabel: 'Election Assistant' },
-  { path: '/research', label: 'Research', icon: 'travel_explore', ariaLabel: 'Voter Research' },
-  { path: '/deadlines', label: 'Deadlines', icon: 'event_upcoming', ariaLabel: 'Election Deadlines' },
+  { path: '/research', label: 'Election Calendar', icon: 'event_upcoming', ariaLabel: 'Election Deadlines' },
   { path: '/profile', label: 'My Profile', icon: 'person_check', ariaLabel: 'My Voter Profile' },
   { path: '/settings', label: 'Settings', icon: 'settings', ariaLabel: 'Application Settings' },
 ];

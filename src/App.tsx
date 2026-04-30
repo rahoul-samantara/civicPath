@@ -7,6 +7,8 @@ import TopBar from './components/common/TopBar/TopBar';
 const LandingPage = lazy(() => import('./pages/LandingPage/LandingPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage/DashboardPage'));
 const AssistantPage = lazy(() => import('./pages/AssistantPage/AssistantPage'));
+const CalendarPage = lazy(() => import('./pages/CalendarPage/CalendarPage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage/ProfilePage'));
 
 import { useAuth } from './hooks/useAuth';
 
@@ -36,11 +38,9 @@ export default function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/assistant" element={<AssistantPage />} />
-                {/* Fallbacks for Phase 1 */}
-                <Route path="/research" element={<div className="text-center p-xl">Research module coming soon</div>} />
-                <Route path="/deadlines" element={<DashboardPage />} />
-                <Route path="/profile" element={<div className="text-center p-xl">Profile settings coming soon</div>} />
-                <Route path="/settings" element={<div className="text-center p-xl">Settings coming soon</div>} />
+                <Route path="/research" element={<CalendarPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/settings" element={<ProfilePage />} />
               </Routes>
             </Suspense>
           </main>
