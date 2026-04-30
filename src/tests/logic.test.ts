@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 // Business Logic Helpers (To be moved to a utils file)
-export const calculateReadiness = (milestones: any[]) => {
+export const calculateReadiness = (milestones: { status: string }[]) => {
   if (milestones.length === 0) return 0;
   const completed = milestones.filter(m => m.status === 'complete').length;
   return Math.round((completed / milestones.length) * 100);

@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './styles/globals.css';
 
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './context/AuthProvider';
 import ErrorBoundary from './components/common/ErrorBoundary';
 
 createRoot(document.getElementById('root')!).render(

@@ -16,6 +16,7 @@ export interface User {
   county: string;
   persona: VoterPersona;
   readinessScore: number; // 0–100
+  address?: string;
   createdAt: string;
   updatedAt: string;
 }

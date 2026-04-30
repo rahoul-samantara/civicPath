@@ -13,67 +13,71 @@ interface ChatInterfaceProps {
   onSendMessage?: (msg: string) => void; // Mocked for Phase 1
 }
 
-import { startCivicChat, getGeminiResponse } from '../../../services/gemini';
+import { type ChatSession } from '@google/generative-ai';
+import { startCivicChat, getGeminiResponseStream } from '../../../services/gemini';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export default function ChatInterface({
   initialMessages,
-  onSendMessage,
 }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
-  // Persistence of chat session
-  const chatRef = useRef<ReturnType<typeof startCivicChat> | null>(null);
+  const chatRef = useRef<ChatSession | null>(null);
 
   useEffect(() => {
     chatRef.current = startCivicChat(initialMessages);
   }, []);
 
-  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isTyping) return;
 
     const userMsgText = input;
-    const newMsg: ChatMessage = {
-      id: Date.now().toString(),
+    const userMsgId = Date.now().toString();
+    
+    setMessages((prev) => [...prev, {
+      id: userMsgId,
       role: 'user',
       content: userMsgText,
       timestamp: new Date().toISOString(),
-    };
-
-    setMessages((prev) => [...prev, newMsg]);
+    }]);
+    
     setInput('');
     setIsTyping(true);
 
+    const assistantMsgId = (Date.now() + 1).toString();
+    setMessages((prev) => [...prev, {
+      id: assistantMsgId,
+      role: 'assistant',
+      content: '',
+      timestamp: new Date().toISOString(),
+    }]);
+
     try {
-      if (onSendMessage) onSendMessage(userMsgText);
+      const stream = await getGeminiResponseStream(chatRef.current, userMsgText);
+      let fullContent = '';
       
-      const responseText = await getGeminiResponse(chatRef.current, userMsgText);
-      
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          role: 'assistant',
-          content: responseText,
-          timestamp: new Date().toISOString(),
-        },
-      ]);
+      for await (const chunk of stream) {
+        const chunkText = chunk.text();
+        fullContent += chunkText;
+        
+        setMessages((prev) => prev.map(msg => 
+          msg.id === assistantMsgId ? { ...msg, content: fullContent } : msg
+        ));
+      }
     } catch (error) {
       console.error('Gemini error:', error);
-      setMessages((prev) => [...prev, {
-        id: 'error-' + Date.now(),
-        role: 'assistant',
-        content: "I'm having trouble connecting to my civic database right now. Please try again in a moment.",
-        timestamp: new Date().toISOString()
-      }]);
+      setMessages((prev) => prev.map(msg => 
+        msg.id === assistantMsgId ? { ...msg, content: "I'm having trouble connecting. Please try again." } : msg
+      ));
     } finally {
       setIsTyping(false);
     }
@@ -93,7 +97,13 @@ export default function ChatInterface({
               </div>
             )}
             <div className="chat__content">
-              <p className="text-body-lg">{msg.content}</p>
+              {msg.role === 'assistant' ? (
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {msg.content}
+                </ReactMarkdown>
+              ) : (
+                <p className="text-body-lg">{msg.content}</p>
+              )}
               
               {/* Action Cards (if provided) */}
               {msg.actions && msg.actions.length > 0 && (

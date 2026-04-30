@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { getMilestones } from '../../services/firebase';
+import { fetchVoterInfo, type CivicVoterInfo } from '../../services/civic';
 import type { JourneyMilestone } from '../../types';
 import ReadinessGauge from '../../components/dashboard/ReadinessGauge/ReadinessGauge';
 import MilestoneStepper from '../../components/dashboard/MilestoneStepper/MilestoneStepper';
@@ -10,14 +11,22 @@ import './DashboardPage.css';
 export default function DashboardPage() {
   const { user, login } = useAuth();
   const [milestones, setMilestones] = useState<JourneyMilestone[]>([]);
+  const [voterInfo, setVoterInfo] = useState<CivicVoterInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
       if (user) {
+        // Fetch milestones
         const ms = await getMilestones(user.uid);
         if (ms.length > 0) {
           setMilestones(ms as JourneyMilestone[]);
+        }
+
+        // Fetch Civic Data if address exists
+        if (user.address) {
+          const info = await fetchVoterInfo(user.address);
+          setVoterInfo(info);
         }
       }
       setLoading(false);
@@ -73,8 +82,20 @@ export default function DashboardPage() {
 
           <div className="card">
             <h2 className="text-headline-md card__title">Your Polling Place</h2>
-            <p className="text-body-md mb-md">Find where you can cast your vote on election day.</p>
-            <Button variant="primary" size="sm" fullWidth icon="map">Find on Map</Button>
+            {voterInfo?.pollingLocations?.[0] ? (
+              <div className="dashboard__polling-info">
+                <p className="text-body-lg mb-xs">{voterInfo.pollingLocations[0].address.locationName}</p>
+                <p className="text-body-md text-muted mb-md">
+                  {voterInfo.pollingLocations[0].address.line1}, {voterInfo.pollingLocations[0].address.city}
+                </p>
+                <Button variant="primary" size="sm" fullWidth icon="map">Open in Maps</Button>
+              </div>
+            ) : (
+              <>
+                <p className="text-body-md mb-md">Find where you can cast your vote on election day.</p>
+                <Button variant="primary" size="sm" fullWidth icon="map">Find on Map</Button>
+              </>
+            )}
           </div>
         </aside>
       </div>

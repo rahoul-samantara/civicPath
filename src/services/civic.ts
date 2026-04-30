@@ -7,23 +7,48 @@
 const CIVIC_API_KEY = import.meta.env.VITE_GOOGLE_CIVIC_API_KEY;
 const BASE_URL = 'https://www.googleapis.com/civicinfo/v2';
 
-export const fetchElectionData = async (address: string) => {
+export interface PollingLocation {
+  address: {
+    locationName: string;
+    line1: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
+  pollingHours: string;
+  startDate: string;
+  endDate: string;
+  sources: { name: string; official: boolean }[];
+}
+
+export interface CivicVoterInfo {
+  election: { name: string; electionDay: string };
+  pollingLocations?: PollingLocation[];
+  contests?: unknown[];
+  state?: unknown[];
+}
+
+export const fetchVoterInfo = async (address: string): Promise<CivicVoterInfo | null> => {
   if (!CIVIC_API_KEY || CIVIC_API_KEY === 'YOUR_CIVIC_API_KEY') {
-    console.warn('Civic API Key missing. Using mock data.');
+    console.warn('Civic API Key missing.');
     return null;
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/voterinfo?key=${CIVIC_API_KEY}&address=${encodeURIComponent(address)}`);
-    if (!response.ok) throw new Error('Civic API request failed');
+    const response = await fetch(
+      `${BASE_URL}/voterinfo?key=${CIVIC_API_KEY}&address=${encodeURIComponent(address)}&productionDataOnly=true`
+    );
+    
+    if (response.status === 400) {
+      console.warn('Address not found by Google Civic API');
+      return null;
+    }
+
+    if (!response.ok) throw new Error(`Civic API error: ${response.status}`);
+    
     return await response.json();
   } catch (error) {
-    console.error('Error fetching civic data:', error);
+    console.error('Civic API Fetch Failure:', error);
     return null;
   }
 };
-
-export const getElections = async () => {
-   const response = await fetch(`${BASE_URL}/elections?key=${CIVIC_API_KEY}`);
-   return await response.json();
-}

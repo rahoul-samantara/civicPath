@@ -27,7 +27,9 @@ export const getUserProfile = async (uid: string) => {
   return userSnap.exists() ? userSnap.data() : null;
 };
 
-export const saveUserProfile = async (uid: string, profileData: any) => {
+import type { User } from '../types';
+
+export const saveUserProfile = async (uid: string, profileData: Partial<User>) => {
   const userRef = doc(db, 'users', uid);
   await setDoc(userRef, { ...profileData, updatedAt: new Date().toISOString() }, { merge: true });
 };

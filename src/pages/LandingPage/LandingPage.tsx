@@ -4,7 +4,7 @@
    ========================================================================== */
 
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import type { VoterPersona } from '../../types';
 import { personaOptions } from '../../data/mockData';
 import './LandingPage.css';

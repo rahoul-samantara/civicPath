@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold, type ChatSession } from '@google/generative-ai';
 
 const API_KEY = import.meta.env.VITE_GOOGLE_AI_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
@@ -43,7 +43,7 @@ export const geminiModel = genAI.getGenerativeModel({
   safetySettings
 });
 
-export const startCivicChat = (history: any[] = []) => {
+export const startCivicChat = (history: { role: string; content: string }[] = []) => {
   // Gemini requires the first message in history to be from a 'user'
   let formattedHistory = history.map(msg => ({
     role: msg.role === 'assistant' ? 'model' : 'user',
@@ -61,8 +61,13 @@ export const startCivicChat = (history: any[] = []) => {
   });
 };
 
-export const getGeminiResponse = async (chat: any, message: string) => {
+export const getGeminiResponse = async (chat: ChatSession, message: string) => {
   const result = await chat.sendMessage(message);
   const response = await result.response;
   return response.text();
+};
+
+export const getGeminiResponseStream = async (chat: ChatSession, message: string) => {
+  const result = await chat.sendMessageStream(message);
+  return result.stream;
 };

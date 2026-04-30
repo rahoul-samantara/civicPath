@@ -2,15 +2,17 @@ import { useState, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/common/Sidebar/Sidebar';
 import TopBar from './components/common/TopBar/TopBar';
-import { mockUser } from './data/mockData';
 
 // Lazy load pages
 const LandingPage = lazy(() => import('./pages/LandingPage/LandingPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage/DashboardPage'));
 const AssistantPage = lazy(() => import('./pages/AssistantPage/AssistantPage'));
 
+import { useAuth } from './hooks/useAuth';
+
 export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { user } = useAuth();
 
   return (
     <BrowserRouter>
@@ -24,8 +26,8 @@ export default function App() {
         <div className="app-main">
           <TopBar
             onMenuClick={() => setIsSidebarOpen(true)}
-            userName={mockUser.displayName}
-            userPhoto={mockUser.photoURL}
+            userName={user?.displayName || 'Voter'}
+            userPhoto={user?.photoURL || null}
           />
           
           <main className="page-content" id="main-content">
